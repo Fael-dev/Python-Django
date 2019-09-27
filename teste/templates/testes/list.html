@@ -1,0 +1,95 @@
+ {% extends 'testes/base.html' %}
+
+{% block title %} Lista de Tarefas  {% endblock %}
+
+{% block content %}
+
+<div class="offset-1 col-10 list-div">
+	<h1>Lista de Tarefas</h1>
+	<div class="container dashboard">
+		<div class="col-4 dashboard-box" id="dashboard-lastday">
+			<h4>Finalizadas nos últimos 30 dias</h4>
+			<span>{{tfr}}</span>
+		</div>
+	</div>
+
+	<div class="container dashboard">
+		<div class="col-4 dashboard-box" id="dashboard-done">
+			<h4>Tarefas Finalizadas</h4>
+			<span>{{tf}}</span>
+		</div>
+	</div>
+
+	<div class="container dashboard">
+		<div class="col-4 dashboard-box" id="dashboard-doing">
+			<h4>Tarefas para fazer</h4>
+			<span>{{taf}}</span>
+		</div>
+	</div>
+
+
+	<a href="newteste/" id="add-link">
+		<div class="col-2 add-div">
+			<i class="fas fa-plus"></i> Add Tarefas
+		</div>
+	</a>
+	<div class="col-9 search-div">
+		<form method="GET" id="search-form">
+			<input class="form-control" type="text" name="search" id="search" placeholder="Digite sua busca" value="{{request.GET.search}}">
+			<i class="fas fa-search" id="search-btn"></i>
+		</form>
+	</div>
+	<div class="col-12 filter-div">
+		<span>Filtrar por:</span>
+		<select name="filter" id="filter" class="form-control">  
+			<option value="">Escolha uma opção</option>
+			<option value="done">Tarefas concluídas</option>
+			<option value="doing">Tarefas a fazer</option>
+		</select>
+	</div>
+
+	{% if messages %}
+		<ul class="messages">
+			  {% for message in messages %}
+			  	<li {% if message.tags %} class="alert alert-{{message.tags}}" {% endif %}> {{message}} </li>
+			  {% endfor %}
+		</ul>
+	{% endif %}	
+
+	<ul class="task-list">
+		{% for test in test %}
+		{% if test.done == 'doing' %}
+		<li class="task-item">
+		{% else %}
+		<li class="task-item done">
+		{% endif %}
+			<span><a href="/teste/{{test.id}}">{{ test.title }}</a></span>
+			<a href="delete/{{test.id}}" class="delete-btn"><span><i class="fas fa-trash"></i></span></a>
+			<a href="edit/{{test.id}}"> <span><i class="fas fa-edit"></i></span></a>
+			<a href="changestatus/{{test.id}}"> <span><i class="fas fa-check"></i></span></a>  
+		</li>
+		{% endfor %}
+	</ul>
+	<div class="pagination">
+		<span class="step-links">
+			{% if test.has_previous %}
+				<a href="?page={{test.previous_page_number }}">
+					<i class="fas fa-arrow-left"></i>
+				</a>
+			{% endif %}
+			{% if test.paginator.num_pages %}
+
+			<span class="current">
+			 	{{test.number}} de {{test.paginator.num_pages }}
+			</span>
+			{% endif %}
+			{% if test.has_next %}
+				<a href="?page={{test.next_page_number }}">
+					<i class="fas fa-arrow-right"></i>
+				</a>
+			{% endif %}
+		</span>
+	</div>
+</div>
+
+{% endblock %}
